@@ -5,6 +5,7 @@
 #include <ros/ros.h>
 #include "sensor_msgs/Joy.h"
 #include "std_msgs/Float32"
+#include "yaml-cpp/yaml.h"
 
 /* Headers in STL */
 #include <mutex>
