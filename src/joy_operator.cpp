@@ -1,13 +1,14 @@
 // Headers in this package
-#include <vrx_joystick/joyvel_converter.hpp>
+#include <vrx_joystick/joy_operator.hpp>
 
-VrxJoystickOperator::VrxSpeedController(ros::NodeHandle nh):
-  nh_(nh)
+VrxJoystickOperator::VrxJoystickOperator(ros::NodeHandle nh, ros::NodeHandle pnh):
+  nh_(nh),
+  pnh_(pnh)
 {
-  joy_sub_ = nh_.subscribe("/Joy", 1, &VrxJoystickOperator::callback_joysub, this);
+  joy_sub_ = pnh_.subscribe("/Joy", 1, &VrxJoystickOperator::callback_get_joysub, this);
 }
 
-VrxJoystickOperator::~VrxSpeedController()
+VrxJoystickOperator::~VrxJoystickOperator()
 {
   
 }
@@ -35,10 +36,10 @@ void VrxJoystickOperator::publish_motor_cmd()
   ros::Rate rate(100);
   while(ros::ok())
   {
-	mtx_lock();
+	mtx_.lock();
 	pub_data_port_.data = cmd_port_;
 	pub_data_stbd_.data = cmd_stbd_;
-	mtx_unlock();
+	mtx_.unlock();
   }
   rate.sleep();
 }
@@ -46,7 +47,7 @@ void VrxJoystickOperator::publish_motor_cmd()
 void VrxJoystickOperator::calc_thruster()
 {
   mtx_.lock();
-  cmd_port_ = axis_surge;
-  cmd_stbd_ = axis_sway;
+  cmd_port_ = axis_surge_;
+  cmd_stbd_ = axis_sway_;
   mtx_.unlock();
 }

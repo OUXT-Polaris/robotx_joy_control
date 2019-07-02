@@ -2,14 +2,14 @@
 #include <ros/ros.h>
 
 /* Include this package */
-#include <vrx_control/vrx_speed_controller.h>
+#include <vrx_joystick/joy_operator.hpp>
 
 int main(int argc, char *argv[])
 {
-    ros::init(argc, argv, "vrx_speed_controller_node");
+    ros::init(argc, argv, "joy_operator_node");
     ros::NodeHandle nh;
-    ros::NodeHandle pnh("~");
-    VrxSpeedController controller(nh,pnh);
+	ros::NodeHandle pnh("~");
+    VrxJoystickOperator controller(nh, pnh);
     controller.run();
     ros::spin();
     return 0;

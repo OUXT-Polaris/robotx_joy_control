@@ -1,10 +1,11 @@
-#ifndef VRX_OPERATE_VRX_JOYSTICK_COMMANDER_H_INCLUDED
-#define VRX_OPERATE_VRX_JOYSTICK_COMMANDER_H_INCLUDED
+#ifndef VRX_OPERATE_VRX_JOYSTICK_OPERATOR_H_INCLUDED
+#define VRX_OPERATE_VRX_JOYSTICK_OPERATORR_H_INCLUDED
 
 /* Headers in ROS */
 #include <ros/ros.h>
 #include "sensor_msgs/Joy.h"
-#include "std_msgs/Float32"
+#include "std_msgs/Float32.h"
+#include "yaml-cpp/yaml.h"
 
 /* Headers in STL */
 #include <mutex>
@@ -16,12 +17,12 @@ class VrxJoystickOperator
 {
   
 public:
-  VrxSpeedController(ros::NodeHandle nh);
-  ~VrxSpeedController();
+  VrxJoystickOperator(ros::NodeHandle nh, ros::NodeHandle pnh);
+  ~VrxJoystickOperator();
   void run();
   
 private:
-  const ros::NodeHandle nh_;
+  const ros::NodeHandle nh_, pnh_;
   ros::Subscriber joy_sub_;
   ros::Publisher operation_signal_pub_;
   std::mutex mtx_;
@@ -38,4 +39,4 @@ private:
   
 };
 
-#endif  /*VRX_OPERATE_VRX_JOYSTICK_COMMANDER_H_INCLUDED*/
+#endif  /*VRX_OPERATE_VRX_JOYSTICK_OPERATOR_H_INCLUDED*/
