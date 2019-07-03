@@ -22,7 +22,7 @@ public:
   void run();
   
 private:
-  const ros::NodeHandle nh_, pnh_;
+  ros::NodeHandle nh_, pnh_;
   ros::Subscriber joy_sub_;
   ros::Publisher operation_signal_pub_;
   std::mutex mtx_;
@@ -32,10 +32,9 @@ private:
   float cmd_port_, cmd_stbd_;
   std_msgs::Float32 pub_data_port_, pub_data_stbd_;
   
-  
-  void callback_get_joysub(const sensor_msgs::Joy& joy_msg);
-  void publish_motor_cmd();
-  void calc_thruster();
+  void joyCallback(const sensor_msgs::Joy::ConstPtr msg);
+  void publishMotorCmd();
+  void calcThruster();
   
 };
 
