@@ -24,7 +24,7 @@ public:
 private:
   ros::NodeHandle nh_, pnh_;
   ros::Subscriber joy_sub_;
-  ros::Publisher operation_signal_pub_;
+  ros::Publisher motor_port_pub_, motor_stbd_pub_;
   std::mutex mtx_;
   
   std::vector<int> joycon_map_;
