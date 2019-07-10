@@ -3,9 +3,8 @@
 
 /* Headers in ROS */
 #include <ros/ros.h>
-#include "sensor_msgs/Joy.h"
-#include "std_msgs/Float32.h"
-#include "yaml-cpp/yaml.h"
+#include <sensor_msgs/Joy.h>
+#include <usv_control_msgs/AzimuthThrusterCatamaranDriveStamped.h>
 
 /* Headers in STL */
 #include <mutex>
@@ -13,29 +12,23 @@
 /* Headers in Boost */
 #include <boost/thread.hpp>
 
-class VrxJoystickOperator
+class RobotXJoyControl
 {
   
 public:
-  VrxJoystickOperator(ros::NodeHandle nh, ros::NodeHandle pnh);
-  ~VrxJoystickOperator();
-  void run();
-  
+  RobotXJoyControl(ros::NodeHandle nh, ros::NodeHandle pnh);
+  ~RobotXJoyControl();
 private:
   ros::NodeHandle nh_, pnh_;
   ros::Subscriber joy_sub_;
-  ros::Publisher motor_port_pub_, motor_stbd_pub_;
-  std::mutex mtx_;
-  
-  std::vector<int> joycon_map_;
-  float axis_surge_, axis_sway_, axis_yaw_;
-  float cmd_port_, cmd_stbd_;
-  std_msgs::Float32 pub_data_port_, pub_data_stbd_;
-  
+  ros::Publisher manual_command_pub_;
   void joyCallback(const sensor_msgs::Joy::ConstPtr msg);
   void publishMotorCmd();
   void calcThruster();
-  
+  std::string joy_topic_;
+  std::string manual_command_topic_;
+  int left_thrust_axis_index_;
+  int right_thrust_axis_index_;
 };
 
 #endif  /*VRX_OPERATE_VRX_JOYSTICK_OPERATOR_H_INCLUDED*/

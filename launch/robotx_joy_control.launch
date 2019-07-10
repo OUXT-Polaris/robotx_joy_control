@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="use_dualshock4" default="true"/>
+    <arg name="manual_command_topic" default="/manual_command"/>
+    <arg name="joy_command_topic" default="/joy"/>
+
+    <group if="$(arg use_dualshock4)">
+        <node pkg="robotx_joy_control" type="robotx_joy_control_node" name="robotx_joy_control_node" output="log" respawn="false" respawn_delay="0">
+            <rosparam file="$(find robotx_joy_control)/config/dualshock4.yaml" command="load"/>
+            <param name="manual_command_topic" value="$(arg manual_command_topic)"/>
+            <param name="joy_command_topic" value="$(arg joy_command_topic)"/>
+        </node>
+    </group>
+
+    <node pkg="joy" type="joy_node" name="joy_node" output="log" respawn="false" respawn_delay="0">
+    </node>
+
+</launch>
