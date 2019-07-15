@@ -24,3 +24,19 @@ include_directories(
 
 add_executable(robotx_joy_control_node src/robotx_joy_control_node.cpp src/robotx_joy_control.cpp)
 target_link_libraries(robotx_joy_control_node ${catkin_LIBRARIES})
+add_dependencies(robotx_joy_control_node usv_control_msgs_generate_messages_cpp)
+
+install(DIRECTORY include
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
+
+foreach(dir config launch)
+  install(DIRECTORY ${dir}/
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
+endforeach(dir)
+
+install(TARGETS robotx_joy_control_node
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
