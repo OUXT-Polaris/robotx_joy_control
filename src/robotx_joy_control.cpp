@@ -11,6 +11,7 @@ RobotXJoyControl::RobotXJoyControl(ros::NodeHandle nh, ros::NodeHandle pnh):
   pnh_.param<int>("axis/left_thrust_cmd", left_thrust_axis_index_, 1);
   pnh_.param<int>("axis/right_thrust_cmd", right_thrust_axis_index_, 4);
   pnh_.param<int>("button/bringup_button_index", bringup_button_index_, 4);
+  pnh_.param<int>("button/override_button_index", override_button_index_, 0);
   pnh_.param<std::string>("joy_topic", joy_topic_, "/joy");
   pnh_.param<std::string>("manual_command_topic", manual_command_topic_, "/manual_command");
   manual_command_pub_ = nh_.advertise<usv_control_msgs::AzimuthThrusterCatamaranDriveStamped>(manual_command_topic_,1);
