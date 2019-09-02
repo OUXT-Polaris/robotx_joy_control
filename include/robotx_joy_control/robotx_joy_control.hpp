@@ -32,9 +32,11 @@ private:
   int right_thrust_axis_index_;
   int bringup_button_index_;
   int override_button_index_;
-  rostate_machine::EventClient client_;
+  rostate_machine::EventClient control_state_machine_client_;
   boost::optional<rostate_machine::Event> systemBringup();
   boost::optional<rostate_machine::Event> manualOverride();
+  rostate_machine::EventClient mission_state_machine_client_;
+  boost::optional<rostate_machine::Event> engage();
   std::mutex mtx_;
   sensor_msgs::Joy joy_;
 };

@@ -5,7 +5,8 @@
 RobotXJoyControl::RobotXJoyControl(ros::NodeHandle nh, ros::NodeHandle pnh):
   nh_(nh),
   pnh_(pnh),
-  client_(nh,pnh,"control_state_machine_node")
+  control_state_machine_client_(nh,pnh,"control_state_machine_node"),
+  mission_state_machine_client_(nh,pnh,"mission_state_machine_node")
 {
   pnh_.param<int>("axis/left_thrust_cmd", left_thrust_axis_index_, 1);
   pnh_.param<int>("axis/right_thrust_cmd", right_thrust_axis_index_, 4);
@@ -14,9 +15,11 @@ RobotXJoyControl::RobotXJoyControl(ros::NodeHandle nh, ros::NodeHandle pnh):
   pnh_.param<std::string>("manual_command_topic", manual_command_topic_, "/manual_command");
   manual_command_pub_ = nh_.advertise<usv_control_msgs::AzimuthThrusterCatamaranDriveStamped>(manual_command_topic_,1);
   joy_sub_ = nh_.subscribe(joy_topic_,1,&RobotXJoyControl::joyCallback,this);
-  client_.registerCallback(std::bind(&RobotXJoyControl::systemBringup, this),"RobotXJoyControl::systemBringup");
-  client_.registerCallback(std::bind(&RobotXJoyControl::manualOverride, this),"RobotXJoyControl::manualOverride");
-  client_.run();
+  control_state_machine_client_.registerCallback(std::bind(&RobotXJoyControl::systemBringup, this),"RobotXJoyControl::systemBringup");
+  control_state_machine_client_.registerCallback(std::bind(&RobotXJoyControl::manualOverride, this),"RobotXJoyControl::manualOverride");
+  mission_state_machine_client_.registerCallback(std::bind(&RobotXJoyControl::engage, this),"RobotXJoyControl::engage");
+  control_state_machine_client_.run();
+  mission_state_machine_client_.run();
 }
 
 RobotXJoyControl::~RobotXJoyControl()
@@ -65,6 +68,22 @@ boost::optional<rostate_machine::Event> RobotXJoyControl::manualOverride()
     rostate_machine::Event msg;
     msg.header = joy_.header;
     msg.trigger_event_name = "manual_override";
+    return msg;
+  }
+  mtx_.unlock();
+  return boost::none;
+}
+
+boost::optional<rostate_machine::Event> RobotXJoyControl::engage()
+{
+  mtx_.lock();
+  ROS_ASSERT(joy_.buttons.size() > bringup_button_index_);
+  if(joy_.buttons[bringup_button_index_] == 1)
+  {
+    mtx_.unlock();
+    rostate_machine::Event msg;
+    msg.header = joy_.header;
+    msg.trigger_event_name = "engage";
     return msg;
   }
   mtx_.unlock();
