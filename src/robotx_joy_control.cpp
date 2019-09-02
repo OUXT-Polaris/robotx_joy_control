@@ -15,6 +15,7 @@ RobotXJoyControl::RobotXJoyControl(ros::NodeHandle nh, ros::NodeHandle pnh):
   manual_command_pub_ = nh_.advertise<usv_control_msgs::AzimuthThrusterCatamaranDriveStamped>(manual_command_topic_,1);
   joy_sub_ = nh_.subscribe(joy_topic_,1,&RobotXJoyControl::joyCallback,this);
   client_.registerCallback(std::bind(&RobotXJoyControl::systemBringup, this),"RobotXJoyControl::systemBringup");
+  client_.registerCallback(std::bind(&RobotXJoyControl::manualOverride, this),"RobotXJoyControl::manualOverride");
   client_.run();
 }
 
@@ -41,7 +42,31 @@ void RobotXJoyControl::joyCallback(const sensor_msgs::Joy::ConstPtr msg)
 boost::optional<rostate_machine::Event> RobotXJoyControl::systemBringup()
 {
   mtx_.lock();
-  joy_.buttons[bringup_button_index_];
+  ROS_ASSERT(joy_.buttons.size() > bringup_button_index_);
+  if(joy_.buttons[bringup_button_index_] == 1)
+  {
+    mtx_.unlock();
+    rostate_machine::Event msg;
+    msg.header = joy_.header;
+    msg.trigger_event_name = "system_bringup";
+    return msg;
+  }
+  mtx_.unlock();
+  return boost::none;
+}
+
+boost::optional<rostate_machine::Event> RobotXJoyControl::manualOverride()
+{
+  mtx_.lock();
+  ROS_ASSERT(joy_.buttons.size() > override_button_index_);
+  if(joy_.buttons[override_button_index_] == 1)
+  {
+    mtx_.unlock();
+    rostate_machine::Event msg;
+    msg.header = joy_.header;
+    msg.trigger_event_name = "manual_override";
+    return msg;
+  }
   mtx_.unlock();
   return boost::none;
 }

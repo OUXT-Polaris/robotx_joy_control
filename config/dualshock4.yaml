@@ -3,3 +3,4 @@ axis:
   right_thrust_cmd : 4
 button:
   bringup_button_index: 1
+  override_button_index: 0
