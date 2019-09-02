@@ -13,6 +13,8 @@
     </group>
 
     <node pkg="joy" type="joy_node" name="joy_node" output="log" respawn="false" respawn_delay="0">
+        <param name="deadzone" value="0.1"/>
+        <param name="autorepeat_rate" value="20"/>
     </node>
 
 </launch>

@@ -5,6 +5,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <usv_control_msgs/AzimuthThrusterCatamaranDriveStamped.h>
+#include <rostate_machine/event_client.h>
 
 /* Headers in STL */
 #include <mutex>
@@ -29,6 +30,11 @@ private:
   std::string manual_command_topic_;
   int left_thrust_axis_index_;
   int right_thrust_axis_index_;
+  int bringup_button_index_;
+  rostate_machine::EventClient client_;
+  boost::optional<rostate_machine::Event> systemBringup();
+  std::mutex mtx_;
+  sensor_msgs::Joy joy_;
 };
 
 #endif  /*VRX_OPERATE_VRX_JOYSTICK_OPERATOR_H_INCLUDED*/

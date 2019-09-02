@@ -1,3 +1,5 @@
 axis:
   left_thrust_cmd : 1
   right_thrust_cmd : 4
+button:
+  bringup_button_index: 4

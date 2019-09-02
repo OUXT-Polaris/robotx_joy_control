@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   sensor_msgs
   usv_control_msgs
+  rostate_machine
 )
 
 catkin_package(
